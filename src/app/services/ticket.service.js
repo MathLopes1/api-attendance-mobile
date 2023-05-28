@@ -2,20 +2,25 @@ const TicketRepository = require("../repositories/ticket.repository.js");
 
 class TicketService {
     async createTicket(ticket) {
-        const lastAttendanceForPriority = await TicketRepository.findLastTicketAttendance(ticket.priority);
+        try {
+            const lastAttendanceForPriority = await TicketRepository.findLastTicketAttendance(ticket.priority);
 
-        let newTicket;
-        let password;
+            let newTicket;
+            let password;
 
-        if (!lastAttendanceForPriority) {
-            password = await this.generatePassword(ticket.password);
-        } else {
-            password = await this.generatePassword(lastAttendanceForPriority.password);
+            if (!lastAttendanceForPriority) {
+                password = await this.generatePassword(ticket.password);
+            } else {
+                password = await this.generatePassword(lastAttendanceForPriority.password);
+            }
+
+            newTicket = await TicketRepository.create({ isAttendance: false, password, priority: ticket.priority });
+
+            return newTicket;
+
+        } catch (error) {
+            throw error;
         }
-
-        newTicket = await TicketRepository.create({ isAttendance: false, password, priority: ticket.priority });
-
-        return newTicket;
     }
 
     async generatePassword(lastPassword = '') {
@@ -32,24 +37,47 @@ class TicketService {
         return password;
     }
 
-    async getAllTickets() {
-        const allTickets = await TicketRepository.getAll();
-        return allTickets;
+    async findAllByDateOfAttendance() {
+        try {
+            const allTickets = await TicketRepository.findAllByDateOfAttendance();
+            return allTickets;
+        } catch (error) {
+            throw error;
+        }
     }
 
-    async getTicketById(id) {
-        const ticket = await TicketRepository.getById(id);
-        return ticket;
+    async findLastAttendanceIsTrue() {
+        try {
+            const ticket = await TicketRepository.findLastAttendanceIsTrue();
+            return ticket;
+        } catch (error) {
+            throw error;
+        }
     }
 
-    async updateTicketById(id, payload) {
-        const ticketUpdated = await TicketRepository.updateById(id, payload);
-        return ticketUpdated;
+    async callAttendance() {
+        try {
+            const lastTicket = await TicketRepository.findLastTicketAttendanceInQueue()
+
+            if(!lastTicket) {
+                return null
+            }
+            
+            const ticket = await TicketRepository.callAttendance(lastTicket.id);
+
+            return ticket;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async deleteTicketById(id) {
-        const ticket = await TicketRepository.deleteById(id);
-        return ticket;
+        try {
+            const ticket = await TicketRepository.deleteById(id);
+            return ticket;
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

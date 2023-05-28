@@ -6,21 +6,18 @@ class TicketController {
         res.status(201).json(newTicket);
     } 
 
-    async getAllTickets(req, res) {
-        const newTicket = await ticketService.getAllTickets();
+    async findAllByDateOfAttendance(req, res) {
+        const newTicket = await ticketService.findAllByDateOfAttendance();
         res.status(200).json(newTicket);
     } 
 
-    async getTicketById(req, res) {
-        const ticketId = parseInt(req.params.id);
-        const ticket = await ticketService.getTicketById(ticketId);
+    async findLastAttendanceIsTrue(req, res) {
+        const ticket = await ticketService.findLastAttendanceIsTrue();
         res.status(200).json(ticket);
     } 
 
-    async updateTicketById(req, res) {
-        const ticketId = parseInt(req.params.id);
-        const payload = req.body;
-        const ticket = await ticketService.updateTicketById(ticketId, payload);
+    async callAttendance(req, res) {
+        const ticket = await ticketService.callAttendance();
         res.status(200).json(ticket);
     }
     

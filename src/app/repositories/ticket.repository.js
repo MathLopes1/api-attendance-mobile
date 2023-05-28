@@ -19,24 +19,47 @@ class TicketRepository {
         })
     }
 
-    async getAll() {
-        return await prismaService.tickets.findMany();
-    }
-
-    async getById(id) {
-        return await prismaService.tickets.findUnique({
+    async findAllByDateOfAttendance() {
+        return await prismaService.tickets.findMany({
             where: {
-                id: id
-            }
-        })
+                isAttendance: true
+            },
+            orderBy: [{
+                createdAt: 'asc',
+            }]
+        });
     }
 
-    async updateById(id, data) {
+    async findLastAttendanceIsTrue() {
+        return await prismaService.tickets.findFirst({
+            where: {
+                isAttendance: true
+            },
+            orderBy: [{
+                createdAt: 'desc',
+            }]
+        });
+    }
+
+    async callAttendance(id) {
         return await prismaService.tickets.update({
             where: {
                 id: id
             },
-            data: data
+            data: {
+                isAttendance: true
+            }
+        })
+    }
+
+    async findLastTicketAttendanceInQueue() {
+        return await prismaService.tickets.findFirst({
+            where: {
+                isAttendance: false
+            },
+            orderBy: [{
+                createdAt: 'asc',
+            }]
         })
     }
 

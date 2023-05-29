@@ -59,10 +59,10 @@ class TicketService {
         try {
             const lastTicket = await TicketRepository.findLastTicketAttendanceInQueue()
 
-            if(!lastTicket) {
+            if (!lastTicket) {
                 return null
             }
-            
+
             const ticket = await TicketRepository.callAttendance(lastTicket.id);
 
             return ticket;
@@ -71,10 +71,25 @@ class TicketService {
         }
     }
 
-    async deleteTicketById(id) {
+    async countTicketsByPriority() {
         try {
-            const ticket = await TicketRepository.deleteById(id);
-            return ticket;
+            const resultsGeneric = await TicketRepository.countTicketsByPriorityGeneric();
+
+            const resultsAttendances = await TicketRepository.countTicketsByPriorityAttendance();
+
+            const totalGenerated = await TicketRepository.count()
+
+            const formattedGenericResults = resultsGeneric.reduce((acc, { priority, _count }) => {
+                acc[priority] = _count.priority;
+                return acc;
+            }, {});
+
+            const formattedAttendanceResults = resultsAttendances.reduce((acc, { priority, _count }) => {
+                acc[priority] = _count.priority;
+                return acc;
+            }, {});
+
+            return { formattedGenericResults, formattedAttendanceResults, totalGenerated };
         } catch (error) {
             throw error;
         }

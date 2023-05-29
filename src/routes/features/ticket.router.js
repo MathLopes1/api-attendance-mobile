@@ -5,7 +5,7 @@ module.exports = (server, routes, prefix = '/api/v1/ticket') => {
     routes.get('/', ticketController.findAllByDateOfAttendance);
     routes.get('/lastAttendance', ticketController.findLastAttendanceIsTrue);
     routes.put('/callAttendance', ticketController.callAttendance);
-    routes.delete('/:id', ticketController.deleteTicketById);
+    routes.get('/count-by-prioritys', ticketController.countTicketsByPriority);
 
     server.use(prefix, routes);
 };

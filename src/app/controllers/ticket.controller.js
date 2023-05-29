@@ -21,10 +21,9 @@ class TicketController {
         res.status(200).json(ticket);
     }
     
-    async deleteTicketById(req, res) {
-        const ticketId = parseInt(req.params.id);
-        const ticket = await ticketService.deleteTicketById(ticketId);
-        res.status(200).json(ticket);
+    async countTicketsByPriority(req, res) {
+        const result = await ticketService.countTicketsByPriority();
+        res.status(200).json(result);
     } 
 }
 

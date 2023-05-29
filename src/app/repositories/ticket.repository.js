@@ -25,8 +25,9 @@ class TicketRepository {
                 isAttendance: true
             },
             orderBy: [{
-                createdAt: 'asc',
-            }]
+                createdAt: 'desc',
+            }],
+            take: 5
         });
     }
 
@@ -63,12 +64,30 @@ class TicketRepository {
         })
     }
 
-    async deleteById(id) {
-        return await prismaService.tickets.delete({
+    async countTicketsByPriorityGeneric() {
+        return await prismaService.tickets.groupBy({
+            by: ['priority'],
+            _count: {
+                priority: true
+            }
+        });
+    }
+
+    async countTicketsByPriorityAttendance() {
+        return await prismaService.tickets.groupBy({
             where: {
-                id: id
-            }        
-        })
+                isAttendance: true
+            },
+            by: ['priority'],
+            _count: {
+                priority: true,
+            }
+        });
+    }
+
+
+    async count() {
+        return await prismaService.tickets.count()
     }
 }
 

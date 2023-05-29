@@ -89,6 +89,14 @@ class TicketRepository {
     async count() {
         return await prismaService.tickets.count()
     }
+
+    async countByAttendance() {
+        return await prismaService.tickets.count({
+            where: {
+                isAttendance: true
+            }
+        })
+    }
 }
 
 const ticketRepository = new TicketRepository();

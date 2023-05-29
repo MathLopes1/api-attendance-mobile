@@ -79,6 +79,8 @@ class TicketService {
 
             const totalGenerated = await TicketRepository.count()
 
+            const totalAttendance = await TicketRepository.countByAttendance()
+
             const formattedGenericResults = resultsGeneric.reduce((acc, { priority, _count }) => {
                 acc[priority] = _count.priority;
                 return acc;
@@ -89,7 +91,7 @@ class TicketService {
                 return acc;
             }, {});
 
-            return { formattedGenericResults, formattedAttendanceResults, totalGenerated };
+            return { formattedGenericResults, formattedAttendanceResults, totalAttendance, totalGenerated };
         } catch (error) {
             throw error;
         }

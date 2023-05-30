@@ -9,9 +9,9 @@ class TicketService {
             let password;
 
             if (!lastAttendanceForPriority) {
-                password = await this.generatePassword(ticket.password);
+                password = await this.generatePassword(ticket.password, ticket.priority);
             } else {
-                password = await this.generatePassword(lastAttendanceForPriority.password);
+                password = await this.generatePassword(lastAttendanceForPriority.password, ticket.priority);
             }
 
             newTicket = await TicketRepository.create({ isAttendance: false, password, priority: ticket.priority });
@@ -23,7 +23,7 @@ class TicketService {
         }
     }
 
-    async generatePassword(lastPassword = '') {
+    async generatePassword(lastPassword = '', typePassword) {
         if (lastPassword.length > 0) {
             lastPassword = lastPassword ? parseInt(lastPassword.slice(-2)) : 0;
         }
@@ -32,7 +32,7 @@ class TicketService {
         const formattedDate = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '');
         const lastTicketNumber = lastPassword ? lastPassword : 0;
         const ticketNumber = (lastTicketNumber + 1).toString().padStart(2, '0');
-        const password = `${formattedDate}-SP${ticketNumber}`;
+        const password = `${formattedDate}-${typePassword}${ticketNumber}`;
 
         return password;
     }
